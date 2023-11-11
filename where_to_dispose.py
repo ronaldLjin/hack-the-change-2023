@@ -4,7 +4,7 @@ from hugchat.login import Login
 # sign in to hugchat
 EMAIL = ""
 PASSWORD = ""
-sign = Login(EMAIL, PASSWORD)
+sign = Login("ronyjin123@gmail.com", "HackTheChange2023")
 cookies = sign.login()
 cookie_path_dir = "./cookies_snapshot"
 sign.saveCookiesToDir(cookie_path_dir)
