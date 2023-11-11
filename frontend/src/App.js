@@ -1,17 +1,17 @@
 import './App.css';
-import GalleryImage from './components/GalleryImage';
+import ImageDetection from './components/ImageDetection';
 import Introduction from './components/Introduction';
 import Map from './components/Map';
 import { Box } from '@chakra-ui/react';
-import WebcamCapture from './components/WebcamCapture';
 
 function App() {
   return (
     <>
-      <Introduction />
-      <GalleryImage />
-      <WebcamCapture />
-      <Map />
+      <Box p="2rem" w={{ sm: '100%', md: '80vw' }} margin="auto" maxW="1000px">
+        <Introduction />
+        <ImageDetection />
+        <Map />
+      </Box>
     </>
   );
 }

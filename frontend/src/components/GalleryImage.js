@@ -2,19 +2,16 @@ import { Box, Input, Image } from '@chakra-ui/react';
 import { useState } from 'react';
 import Webcam from 'react-webcam';
 
-export default function UploadImage() {
-  const [file, setFile] = useState();
-
+export default function GalleryImage({ image, setImage }) {
   const detectImage = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setFile(reader.result);
+        setImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
-    console.log(file);
   };
 
   return (
@@ -22,12 +19,10 @@ export default function UploadImage() {
       <Input
         p="2em"
         type="file"
-        id="imageInput"
         onChange={detectImage}
-        accept=".jpg, .jpeg, .png"
+        accept="image/*"
         variant="outlined"
       />
-      {file && <Image src={file} alt="selected file" />}
     </Box>
   );
 }

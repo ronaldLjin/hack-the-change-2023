@@ -16,20 +16,23 @@ import {
 
 const videoConstraints = {
   facingMode: 'user',
-  width: 600,
-  height: 600,
+  width: 300,
+  height: 300,
 };
 
-export default function WebcamCapture() {
+export default function WebcamCapture({ image, setImage }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const [image, setImage] = useState();
-  const [isCameraOn, setIsCameraOn] = useState(false);
 
   const webcamRef = useRef(null);
   const capture = useCallback(() => {
     setImage(webcamRef.current.getScreenshot());
   }, [webcamRef]);
+
+  const closeModal = () => {
+    onClose();
+    capture();
+    console.log(image);
+  };
 
   return (
     <>
@@ -45,17 +48,13 @@ export default function WebcamCapture() {
               screenshotFormat="image/jpg"
               videoConstraints={videoConstraints}
             />
-            {image && <Image src={image} alt="idk" />}
-            <Button onClick={capture}>Screenshot!</Button>
           </ModalBody>
 
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
+          <Button colorScheme="blue" mr={3} onClick={closeModal}>
+            Detect Image
           </Button>
         </ModalContent>
       </Modal>
-
-      {/* <Button onClick={() => setIsCameraOn(true)}>Take a Picture!</Button> */}
     </>
   );
 }
