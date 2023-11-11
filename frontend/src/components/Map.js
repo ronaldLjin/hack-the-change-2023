@@ -4,14 +4,14 @@ import { Box } from '@chakra-ui/react';
 export default function Map() {
   const defaultProps = {
     center: {
-      lat: 10.99835602,
-      lng: 77.01502627,
+      lat: 52,
+      lng: -110,
     },
-    zoom: 11,
+    zoom: 5,
   };
 
   return (
-    <Box h="100vh" w="100%">
+    <Box h="80vh" w="100%">
       <GoogleMapReact
         bootstrapURLKeys={{ key: '' }}
         defaultCenter={defaultProps.center}

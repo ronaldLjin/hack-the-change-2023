@@ -1,14 +1,16 @@
 import './App.css';
-import UploadImage from './components/UploadImage';
+import GalleryImage from './components/GalleryImage';
 import Introduction from './components/Introduction';
 import Map from './components/Map';
 import { Box } from '@chakra-ui/react';
+import WebcamCapture from './components/WebcamCapture';
 
 function App() {
   return (
     <>
       <Introduction />
-      <UploadImage />
+      <GalleryImage />
+      <WebcamCapture />
       <Map />
     </>
   );

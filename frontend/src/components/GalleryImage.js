@@ -1,5 +1,6 @@
 import { Box, Input, Image } from '@chakra-ui/react';
 import { useState } from 'react';
+import Webcam from 'react-webcam';
 
 export default function UploadImage() {
   const [file, setFile] = useState();
