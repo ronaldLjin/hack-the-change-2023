@@ -1,8 +1,0 @@
-tensorflow
-numpy
-opencv-python
-lxml
-tqdm
-flask
-seaborn
-pillow
