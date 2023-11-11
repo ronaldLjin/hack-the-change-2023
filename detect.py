@@ -23,7 +23,7 @@ def detect_items(image_data):
         base_options=BaseOptions(model_asset_path=MODEL_PATH),
         max_results=5,
         running_mode=VisionRunningMode.IMAGE,
-        score_threshold=0.5
+        score_threshold=0.25,
     )
 
     with ObjectDetector.create_from_options(options) as detector:

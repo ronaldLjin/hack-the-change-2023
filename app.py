@@ -2,6 +2,7 @@ from flask import Flask, flash, request, redirect
 from detect import detect_items
 from PIL import Image
 from io import BytesIO
+from where_to_dispose import where_to_dispose
 import os
 
 app = Flask(__name__)
@@ -35,6 +36,17 @@ def detect():
         return results
     else:
         return "Invalid file upload", 400
+
+
+@app.route("/waste_category", methods=["GET"])
+def waste_category():
+    args = request.args
+    category = args.get("category")
+
+    if category is not None:
+        return where_to_dispose(category)
+    else:
+        return "No category provided", 400
 
 
 if __name__ == "__main__":
