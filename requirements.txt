@@ -1,5 +1,6 @@
 absl-py==2.0.0
 attrs==23.1.0
+gunicorn==21.2.0
 blinker==1.7.0
 cffi==1.16.0
 click==8.1.7
