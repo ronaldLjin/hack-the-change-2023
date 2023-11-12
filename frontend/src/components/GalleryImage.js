@@ -2,9 +2,10 @@ import { Box, Input, Image } from '@chakra-ui/react';
 import { useState } from 'react';
 import Webcam from 'react-webcam';
 
-export default function GalleryImage({ image, setImage }) {
+export default function GalleryImage({ image, setImage, setFile }) {
   const detectImage = (e) => {
     const file = e.target.files[0];
+    setFile(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {

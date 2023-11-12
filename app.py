@@ -4,8 +4,10 @@ from PIL import Image
 from io import BytesIO
 from where_to_dispose import where_to_dispose
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.urandom(24)
 
 

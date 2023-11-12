@@ -2,8 +2,8 @@ from hugchat import hugchat
 from hugchat.login import Login
 
 # sign in to hugchat
-EMAIL = ""
-PASSWORD = ""
+EMAIL = "***REMOVED***"
+PASSWORD = "***REMOVED***"
 sign = Login(EMAIL, PASSWORD)
 cookies = sign.login()
 cookie_path_dir = "./cookies_snapshot"

@@ -1,17 +1,38 @@
 import { useState } from 'react';
 import GalleryImage from './GalleryImage';
 import WebcamCapture from './WebcamCapture';
-import { Image, HStack } from '@chakra-ui/react';
+import { Image, HStack, Box, Button } from '@chakra-ui/react';
 
 export default function ImageDetection() {
   const [image, setImage] = useState();
+  const [file, setFile] = useState();
+  const [items, setItems] = useState();
+
+  async function detect() {
+    const formData = new FormData();
+    formData.append('image', file);
+    fetch('http://localhost:5000/detect', {
+      method: 'POST',
+      mode: 'cors',
+      body: formData,
+    }).then((res) => {
+      setItems(res);
+      console.log(res.json());
+    });
+    // setItems(response);
+    // console.log(response.json());
+  }
+
   return (
     <>
       <HStack justifyContent="center">
-        <GalleryImage image={image} setImage={setImage} />
-        <WebcamCapture image={image} setImage={setImage} />
+        <GalleryImage image={image} setImage={setImage} setFile={setFile} />
+        <WebcamCapture image={image} setImage={setImage} setFile={setFile} />
       </HStack>
-      {image && <Image src={image} alt="selected file" />}
+      <Box p="3rem" display="flex" justifyContent="center">
+        {image && <Image src={image} alt="selected file" />}
+      </Box>
+      {image && <Button onClick={detect}>Detect</Button>}
     </>
   );
 }
