@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ImageDetection from "./ImageDetection";
-import Map from "./Map";
+import SearchMap from "./SearchMap";
 
 export default function Body({ image, setImage, file, setFile }) {
   const [showMap, setShowMap] = useState(false);
@@ -26,7 +26,7 @@ export default function Body({ image, setImage, file, setFile }) {
           setShowMap={setShowMap}
         />
       </div>
-      {showMap && <Map />}
+      {showMap && <SearchMap />}
     </div>
   );
 }

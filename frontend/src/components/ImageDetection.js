@@ -108,7 +108,7 @@ export default function ImageDetection({
     >
       <Card maxW="sm">
         <CardBody>
-          {!image && <Heading size="sm">Example Detection Card!</Heading>}
+          {!image && <Heading size="md">Example Detection Card!</Heading>}
           {image && (
             <Tooltip label="Close Detection" placement="left">
               <IconButton
@@ -141,9 +141,8 @@ export default function ImageDetection({
             {console.log(items)}
             {(items ?? (image ? [] : exampleCard.items)).map((item) => {
               return (
-                <Skeleton isLoaded={!isLoading}>
+                <Skeleton key={Math.random(21230)} isLoaded={!isLoading}>
                   <ItemList
-                    key={Math.random(21230)}
                     item={item}
                     categories={categories}
                     isLoading={isLoading}
