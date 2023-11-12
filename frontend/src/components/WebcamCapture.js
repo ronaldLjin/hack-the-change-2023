@@ -19,13 +19,23 @@ const videoConstraints = {
   height: 300,
 };
 
+function base64ToFile(base64String) {
+  const base64WithoutPrefix = base64String.split(",")[1];
+  const arrayBuffer = Uint8Array.from(atob(base64WithoutPrefix), (c) =>
+    c.charCodeAt(0)
+  );
+  const blob = new Blob([arrayBuffer], { type: "image/png" });
+  return new File([blob], "webcam-image.png", { type: "image/png" });
+}
+
 export default function WebcamCapture({ setImage, setFile }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const webcamRef = useRef(null);
   const capture = useCallback(() => {
-    setFile(undefined);
-    setImage(webcamRef.current.getScreenshot());
+    const image = webcamRef.current.getScreenshot();
+    setFile(base64ToFile(image));
+    setImage(image);
   }, [webcamRef]);
 
   const closeModal = () => {
