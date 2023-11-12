@@ -11,8 +11,10 @@ import {
   Button,
   Tooltip,
   IconButton,
+  Box,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
+import axios from "axios";
 
 export default function ImageDetection({
   image,
@@ -23,20 +25,37 @@ export default function ImageDetection({
   setShowMap,
 }) {
   const [items, setItems] = useState();
+  const [categories, setCategories] = useState({});
 
-  async function detect() {
+  async function getWasteCategory(category) {
+    const url = `http://localhost:5000/waste_category?category=${category}`;
+    const response = await axios.get(url);
+    const data = response.data;
+    return data;
+  }
+
+  function detect() {
     const formData = new FormData();
     formData.append("image", file);
-    fetch("http://127.0.0.1:5000/detect", {
+    fetch("http://localhost:5000/detect", {
       method: "POST",
-      mode: "cors",
       body: formData,
-    }).then((res) => {
-      setItems(res);
-      console.log(res.json());
-    });
-    // setItems(response);
-    // console.log(response.json());
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setItems(data);
+        return data;
+      })
+      .then((data) => {
+        const map = {};
+        data.forEach((item) => {
+          const category = item.categories[0].category_name;
+          getWasteCategory(category).then((res) => {
+            map[category] = res;
+          });
+        });
+        setCategories(map);
+      });
   }
 
   const closeDetection = () => {
@@ -106,7 +125,30 @@ export default function ImageDetection({
             </div>
           </CardFooter>
         </Card>
+        {items?.map((item) => {
+          return (
+            <Test
+              key={Math.random(21230192391203)}
+              item={item}
+              categories={categories}
+            />
+          );
+        })}
       </div>
+    </>
+  );
+}
+function Test({ item, categories }) {
+  const category = item.categories[0].category_name;
+  const confidence = item.categories[0].score;
+
+  const [open, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setIsOpen(true)}>{category}</Button>
+      <Box>{confidence}</Box>
+      {open && <Box>Category: {categories[category]}</Box>}
     </>
   );
 }
