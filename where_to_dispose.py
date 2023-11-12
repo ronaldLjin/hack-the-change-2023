@@ -14,6 +14,6 @@ def where_to_dispose(item):
     chatbot = hugchat.ChatBot(cookies=cookies.get_dict())
 
     id = chatbot.new_conversation()
-    query = f"Would a {item} fall under compost, garbage, recycling, e-waste, or hazardous waste? Give me a one word answer."
+    query = f"Would a {item} fall under compost, garbage, recycling, e-waste, or hazardous? Give me a one word answer."
     query_result = chatbot.query(query)
     return str(query_result)

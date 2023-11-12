@@ -1,22 +1,21 @@
-import { useState } from "react";
-import ImageDetection from "./ImageDetection";
-import SearchMap from "./SearchMap";
+import { useState } from 'react';
+import ImageDetection from './ImageDetection';
+import SearchMap from './SearchMap';
+import { Box, Button, VStack } from '@chakra-ui/react';
 
 export default function Body({ image, setImage, file, setFile }) {
   const [showMap, setShowMap] = useState(false);
+  const [attributes, setAttributes] = useState([]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        margin: "20px 0",
-      }}
+    <Box
+      display="flex"
+      justifyContent="center"
+      margin="20px 0"
       h="70vh"
       w="100%"
     >
-      <div style={{ margin: "0 15px" }}>
+      <div>
         <ImageDetection
           image={image}
           setImage={setImage}
@@ -24,9 +23,10 @@ export default function Body({ image, setImage, file, setFile }) {
           setFile={setFile}
           showMap={showMap}
           setShowMap={setShowMap}
+          setAttributes={setAttributes}
         />
       </div>
-      {showMap && <SearchMap />}
-    </div>
+      {showMap && <SearchMap attributes={attributes} />}
+    </Box>
   );
 }

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { GoogleApiWrapper, InfoWindow, Map, Marker } from "google-maps-react";
-import { Button } from "@chakra-ui/react";
+import { useState, useEffect } from 'react';
+import { GoogleApiWrapper, InfoWindow, Map, Marker } from 'google-maps-react';
+import { Button, Box, VStack } from '@chakra-ui/react';
 
 const mapSettings = {
   center: {
@@ -10,7 +10,7 @@ const mapSettings = {
   zoom: 5,
 };
 
-const SearchMap = ({ google, loaded }) => {
+const SearchMap = ({ google, loaded, attributes }) => {
   const [places, setPlaces] = useState([]);
   const [activeMarker, setActiveMarker] = useState(null);
   const [selectedPlace, setSelectedPlace] = useState(null);
@@ -36,7 +36,7 @@ const SearchMap = ({ google, loaded }) => {
 
         setPlaces(places);
       } else {
-        console.error("Text search failed with status:", status);
+        console.error('Text search failed with status:', status);
       }
     });
   };
@@ -51,57 +51,48 @@ const SearchMap = ({ google, loaded }) => {
   };
 
   return (
-    <>
-      <Map
-        google={google}
-        zoom={14}
-        initialCenter={mapSettings.center}
-        initialZoom={mapSettings.zoom}
-        onClick={onMapClick}
-        onReady={(mapProps, map) => {
-          // Save the map instance for later use
-          window.map = map;
+    <VStack>
+      <Box paddingInline="2rem" h="30vw" w="30vw">
+        <Map
+          style={{ maxHeight: '500px', maxWidth: '500px' }}
+          google={google}
+          zoom={12}
+          initialCenter={mapSettings.center}
+          initialZoom={mapSettings.zoom}
+          onClick={onMapClick}
+          onReady={(mapProps, map) => {
+            // Save the map instance for later use
+            window.map = map;
+          }}
+        >
+          {places.map((place, index) => (
+            <Marker
+              key={index}
+              name={place.name}
+              position={{ lat: place.lat, lng: place.lng }}
+              onClick={onMarkerClick}
+            />
+          ))}
+          <InfoWindow marker={activeMarker} visible={!!activeMarker}>
+            <div>
+              <h3>{selectedPlace && selectedPlace.name}</h3>
+            </div>
+          </InfoWindow>
+        </Map>
+      </Box>
+      <Button
+        marginTop="-75px"
+        onClick={() => {
+          console.log(attributes.join(','));
+          performTextSearch(attributes.join(','));
         }}
       >
-        {places.map((place, index) => (
-          <Marker
-            key={index}
-            name={place.name}
-            position={{ lat: place.lat, lng: place.lng }}
-            onClick={onMarkerClick}
-          />
-        ))}
-        <InfoWindow marker={activeMarker} visible={!!activeMarker}>
-          <div>
-            <h3>{selectedPlace && selectedPlace.name}</h3>
-          </div>
-        </InfoWindow>
-      </Map>
-      <Button onClick={() => performTextSearch("fire stations")}>try me</Button>
-    </>
+        Find Disposal Areas!
+      </Button>
+    </VStack>
   );
 };
 
 export default GoogleApiWrapper({
-  apiKey: "***REMOVED***",
+  apiKey: '***REMOVED***',
 })(SearchMap);
-
-// export default function Map() {
-//   const defaultProps = {
-//     center: {
-//       lat: 52,
-//       lng: -110,
-//     },
-//     zoom: 5,
-//   };
-
-//   return (
-//     <Box style={{ margin: '20px 0' }} h="75vh" w="100%">
-//       <GoogleMapReact
-//         bootstrapURLKeys={{ key: '***REMOVED***' }}
-//         defaultCenter={defaultProps.center}
-//         defaultZoom={defaultProps.zoom}
-//       ></GoogleMapReact>
-//     </Box>
-//   );
-// }

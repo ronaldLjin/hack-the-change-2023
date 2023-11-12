@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Image,
   Card,
@@ -13,21 +13,23 @@ import {
   IconButton,
   Box,
   Skeleton,
-} from "@chakra-ui/react";
+  Checkbox,
+  HStack,
+} from '@chakra-ui/react';
 import {
   CloseIcon,
   ChevronRightIcon,
   ChevronDownIcon,
   WarningIcon,
-} from "@chakra-ui/icons";
-import axios from "axios";
+} from '@chakra-ui/icons';
+import axios from 'axios';
 
 const exampleCard = {
-  imageSrc: "/trashcans.jpg",
-  imageAlt: "Multiple Recycling Bins",
+  imageSrc: '/trashcans.jpg',
+  imageAlt: 'Multiple Recycling Bins',
   items: [
-    { categories: [{ category_name: "bottle", text: "Recycling" }] },
-    { categories: [{ category_name: "egg shell", text: "Compost" }] },
+    { categories: [{ category_name: 'bottle', text: 'Recycling' }] },
+    { categories: [{ category_name: 'egg shell', text: 'Compost' }] },
   ],
 };
 
@@ -38,10 +40,29 @@ export default function ImageDetection({
   setFile,
   showMap,
   setShowMap,
+  setAttributes,
 }) {
   const [items, setItems] = useState(undefined);
   const [categories, setCategories] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleAttributeChange = (attribute) => {
+    setAttributes((prevAttributes) => {
+      // Check if the attribute is already in the array
+      if (!prevAttributes) {
+        return [...prevAttributes, attribute];
+      }
+
+      const isAttributePresent = prevAttributes.includes(attribute);
+
+      if (!isAttributePresent) {
+        // If attribute is not present, add it to the array
+        return [...prevAttributes, attribute];
+      } else {
+        return prevAttributes;
+      }
+    });
+  };
 
   async function getWasteCategory(category) {
     const url = `http://localhost:5000/waste_category?category=${category}`;
@@ -52,9 +73,9 @@ export default function ImageDetection({
 
   function detect() {
     const formData = new FormData();
-    formData.append("image", file);
-    fetch("http://localhost:5000/detect", {
-      method: "POST",
+    formData.append('image', file);
+    fetch('http://localhost:5000/detect', {
+      method: 'POST',
       body: formData,
     })
       .then((res) => res.json())
@@ -68,6 +89,8 @@ export default function ImageDetection({
         data.forEach((item) => {
           const category = item.categories[0].category_name;
           const promise = getWasteCategory(category).then((res) => {
+            const promise2 = handleAttributeChange(res);
+            promises.push(promise2);
             map[category] = res;
           });
           promises.push(promise);
@@ -88,6 +111,8 @@ export default function ImageDetection({
     if (image) {
       setItems(undefined);
       setCategories({});
+      setShowMap(false);
+      setAttributes([]);
     }
   }, [image]);
 
@@ -96,14 +121,16 @@ export default function ImageDetection({
     setFile(undefined);
     setItems(undefined);
     setCategories({});
+    setShowMap(false);
+    setAttributes([]);
   };
 
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        margin: "10px 0",
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '10px 0',
       }}
     >
       <Card maxW="sm">
@@ -138,7 +165,6 @@ export default function ImageDetection({
           </Stack>
           <Stack mt="6" spacing="3">
             <Heading size="md">Category of Disposal</Heading>
-            {console.log(items)}
             {(items ?? (image ? [] : exampleCard.items)).map((item) => {
               return (
                 <Skeleton key={Math.random(21230)} isLoaded={!isLoading}>
@@ -154,10 +180,10 @@ export default function ImageDetection({
             {Array.isArray(items) && items.length === 0 && (
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  columnGap: "6px",
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  columnGap: '6px',
                 }}
               >
                 <WarningIcon color="yellow.500" />
@@ -170,13 +196,13 @@ export default function ImageDetection({
         <CardFooter>
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              columnGap: "4px",
+              display: 'flex',
+              alignItems: 'center',
+              columnGap: '4px',
             }}
           >
             <Text color="red.600" fontSize="lg">
-              Safety reminder if its stuff like a battery?
+              Where do I throw it away?
             </Text>
             <Button
               width="150px"
@@ -184,7 +210,7 @@ export default function ImageDetection({
               colorScheme="blue"
               onClick={() => setShowMap((prev) => !prev)}
             >
-              {showMap ? "Close Map" : "View Map"}
+              {showMap ? 'Close Map' : 'View Map'}
             </Button>
           </div>
         </CardFooter>
@@ -192,10 +218,10 @@ export default function ImageDetection({
     </div>
   );
 }
+
 function ItemList({ item, categories, isLoading, useExample }) {
   const [isOpen, setIsOpen] = useState(false);
   const category = item.categories[0].category_name;
-
   return (
     <>
       <Button
@@ -211,10 +237,12 @@ function ItemList({ item, categories, isLoading, useExample }) {
         {category}
       </Button>
       {isOpen && (
-        <Box>
-          Category:{" "}
-          {useExample ? item.categories[0].text : categories[category]}
-        </Box>
+        <HStack>
+          <Box>
+            Category:{' '}
+            {useExample ? item.categories[0].text : categories[category]}
+          </Box>
+        </HStack>
       )}
     </>
   );
