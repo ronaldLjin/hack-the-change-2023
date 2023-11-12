@@ -224,38 +224,6 @@ function ItemList({ item, categories, isLoading, useExample }) {
   const category = item.categories[0].category_name;
   return (
     <>
-      <HStack justifyContent="center">
-        <GalleryImage image={image} setImage={setImage} setFile={setFile} />
-        <WebcamCapture image={image} setImage={setImage} setFile={setFile} />
-      </HStack>
-      <Box p="3rem" display="flex" justifyContent="center">
-        {image && <Image src={image} alt="selected file" />}
-      </Box>
-      {image && <Button onClick={detect}>Detect</Button>}
-      {items.map((item) => {
-        return (
-          <Test
-            key={Math.random(21230192391203)}
-            item={item}
-            categories={categories}
-          />
-        );
-      })}
-    </>
-  );
-}
-
-function Test({ item, categories }) {
-  const category = item.categories[0].category_name;
-  const confidence = item.categories[0].score;
-
-  const [open, setIsOpen] = useState(false);
-
-  return (
-    <>
-      <Button onClick={() => setIsOpen(true)}>{category}</Button>
-      <Box>{confidence}</Box>
-      {open && <Box>Category: {categories[category]}</Box>}
       <Button
         isDisabled={isLoading}
         leftIcon={isOpen ? <ChevronDownIcon /> : <ChevronRightIcon />}
