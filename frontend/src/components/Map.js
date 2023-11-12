@@ -1,5 +1,5 @@
-import GoogleMapReact from "google-map-react";
-import { Box } from "@chakra-ui/react";
+import GoogleMapReact from 'google-map-react';
+import { Box } from '@chakra-ui/react';
 
 export default function Map() {
   const defaultProps = {
@@ -11,9 +11,9 @@ export default function Map() {
   };
 
   return (
-    <Box style={{ margin: "20px 0" }} h="75vh" w="100%">
+    <Box style={{ margin: '20px 0' }} h="75vh" w="100%">
       <GoogleMapReact
-        bootstrapURLKeys={{ key: "" }}
+        bootstrapURLKeys={{ key: '***REMOVED***' }}
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       ></GoogleMapReact>

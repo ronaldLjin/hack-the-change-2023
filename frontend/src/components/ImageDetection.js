@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Image,
   Card,
@@ -12,9 +12,9 @@ import {
   Tooltip,
   IconButton,
   Box,
-} from "@chakra-ui/react";
-import { CloseIcon } from "@chakra-ui/icons";
-import axios from "axios";
+} from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 
 export default function ImageDetection({
   image,
@@ -26,6 +26,7 @@ export default function ImageDetection({
 }) {
   const [items, setItems] = useState();
   const [categories, setCategories] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   async function getWasteCategory(category) {
     const url = `http://localhost:5000/waste_category?category=${category}`;
@@ -35,10 +36,11 @@ export default function ImageDetection({
   }
 
   function detect() {
+    setIsLoading(true);
     const formData = new FormData();
-    formData.append("image", file);
-    fetch("http://localhost:5000/detect", {
-      method: "POST",
+    formData.append('image', file);
+    fetch('http://localhost:5000/detect', {
+      method: 'POST',
       body: formData,
     })
       .then((res) => res.json())
@@ -55,6 +57,7 @@ export default function ImageDetection({
           });
         });
         setCategories(map);
+        setIsLoading(false);
       });
   }
 
@@ -67,9 +70,9 @@ export default function ImageDetection({
     <>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          margin: "10px 0",
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '10px 0',
         }}
       >
         <Card maxW="sm">
@@ -89,7 +92,7 @@ export default function ImageDetection({
             )}
             <Stack mt="2" spacing="2">
               <Image
-                src={image ?? "/trashcans.jpg"}
+                src={image ?? '/trashcans.jpg'}
                 alt="selected file"
                 borderRadius="lg"
               />
@@ -98,17 +101,26 @@ export default function ImageDetection({
               </Button>
             </Stack>
             <Stack mt="6" spacing="3">
-              <Heading size="md">Category or where to dispose</Heading>
-              <Text>Some stuff that hugchat gives us.</Text>
+              <Heading size="md">Category of Disposal</Heading>
+              {items?.map((item) => {
+                return (
+                  <Test
+                    key={Math.random(21230192391203)}
+                    item={item}
+                    categories={categories}
+                    isLoading={isLoading}
+                  />
+                );
+              })}
             </Stack>
           </CardBody>
           <Divider />
           <CardFooter>
             <div
               style={{
-                display: "flex",
-                alignItems: "center",
-                columnGap: "4px",
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: '4px',
               }}
             >
               <Text color="red.600" fontSize="lg">
@@ -120,34 +132,32 @@ export default function ImageDetection({
                 colorScheme="blue"
                 onClick={() => setShowMap((prev) => !prev)}
               >
-                {showMap ? "Close Map" : "View Map"}
+                {showMap ? 'Close Map' : 'View Map'}
               </Button>
             </div>
           </CardFooter>
         </Card>
-        {items?.map((item) => {
-          return (
-            <Test
-              key={Math.random(21230192391203)}
-              item={item}
-              categories={categories}
-            />
-          );
-        })}
       </div>
     </>
   );
 }
-function Test({ item, categories }) {
+function Test({ item, categories, isLoading }) {
   const category = item.categories[0].category_name;
-  const confidence = item.categories[0].score;
 
   const [open, setIsOpen] = useState(false);
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)}>{category}</Button>
-      <Box>{confidence}</Box>
+      <Button
+        isDisabled={isLoading}
+        onClick={() => {
+          if (!isLoading) {
+            setIsOpen(true);
+          }
+        }}
+      >
+        {category}
+      </Button>
       {open && <Box>Category: {categories[category]}</Box>}
     </>
   );
