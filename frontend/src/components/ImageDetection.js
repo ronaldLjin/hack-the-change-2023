@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   Card,
@@ -12,6 +12,7 @@ import {
   Tooltip,
   IconButton,
   Box,
+  Skeleton
 } from "@chakra-ui/react";
 import { CloseIcon, ChevronRightIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import axios from "axios";
@@ -45,7 +46,6 @@ export default function ImageDetection({
   }
 
   function detect() {
-    setIsLoading(true);
     const formData = new FormData();
     formData.append("image", file);
     fetch("http://localhost:5000/detect", {
@@ -58,17 +58,25 @@ export default function ImageDetection({
         return data;
       })
       .then((data) => {
+        let promises = [];
         const map = {};
         data.forEach((item) => {
           const category = item.categories[0].category_name;
-          getWasteCategory(category).then((res) => {
+          const promise = getWasteCategory(category).then((res) => {
             map[category] = res;
           });
+          promises.push(promise);
         });
-        setCategories(map);
-        setIsLoading(false);
+        Promise.all(promises).then(() => {
+          setCategories(map);
+          setIsLoading(false);
+        });
       });
   }
+
+  useEffect(() => {
+    if (isLoading) detect();
+  }, [isLoading]);
 
   const closeDetection = () => {
     setImage(undefined);
@@ -106,7 +114,12 @@ export default function ImageDetection({
               alt={exampleCard.imageAlt}
               borderRadius="lg"
             />
-            <Button onClick={detect} isDisabled={!image}>
+            <Button
+              onClick={() => {
+                setIsLoading(true);
+              }}
+              isDisabled={!image}
+            >
               Detect
             </Button>
           </Stack>
@@ -115,6 +128,7 @@ export default function ImageDetection({
             {console.log(items)}
             {(items ?? (image ? [] : exampleCard.items)).map((item) => {
               return (
+                <Skeleton isLoaded={!isLoading}>
                 <ItemList
                   key={Math.random(21230192391203)}
                   item={item}
@@ -122,6 +136,7 @@ export default function ImageDetection({
                   isLoading={isLoading}
                   useExample={!image}
                 />
+                </Skeleton>
               );
             })}
           </Stack>
@@ -166,6 +181,7 @@ function ItemList({ item, categories, isLoading, useExample }) {
             setIsOpen((prev) => !prev);
           }
         }}
+        w="100%"
       >
         {category}
       </Button>
