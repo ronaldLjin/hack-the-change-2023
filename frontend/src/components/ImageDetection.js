@@ -12,17 +12,22 @@ import {
   Tooltip,
   IconButton,
   Box,
-  Skeleton
+  Skeleton,
 } from "@chakra-ui/react";
-import { CloseIcon, ChevronRightIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import {
+  CloseIcon,
+  ChevronRightIcon,
+  ChevronDownIcon,
+  WarningIcon,
+} from "@chakra-ui/icons";
 import axios from "axios";
 
 const exampleCard = {
   imageSrc: "/trashcans.jpg",
   imageAlt: "Multiple Recycling Bins",
   items: [
-    { categories: [{ category_name: "bottle", text: "recycling" }] },
-    { categories: [{ category_name: "egg shell", text: "compost" }] },
+    { categories: [{ category_name: "bottle", text: "Recycling" }] },
+    { categories: [{ category_name: "egg shell", text: "Compost" }] },
   ],
 };
 
@@ -78,6 +83,14 @@ export default function ImageDetection({
     if (isLoading) detect();
   }, [isLoading]);
 
+  // Reset items and categories if the image changes
+  useEffect(() => {
+    if (image) {
+      setItems(undefined);
+      setCategories({});
+    }
+  }, [image]);
+
   const closeDetection = () => {
     setImage(undefined);
     setFile(undefined);
@@ -129,16 +142,29 @@ export default function ImageDetection({
             {(items ?? (image ? [] : exampleCard.items)).map((item) => {
               return (
                 <Skeleton isLoaded={!isLoading}>
-                <ItemList
-                  key={Math.random(21230192391203)}
-                  item={item}
-                  categories={categories}
-                  isLoading={isLoading}
-                  useExample={!image}
-                />
+                  <ItemList
+                    key={Math.random(21230)}
+                    item={item}
+                    categories={categories}
+                    isLoading={isLoading}
+                    useExample={!image}
+                  />
                 </Skeleton>
               );
             })}
+            {Array.isArray(items) && items.length === 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  columnGap: "6px",
+                }}
+              >
+                <WarningIcon color="yellow.500" />
+                <Text>Sorry! No items were detected in the image.</Text>
+              </div>
+            )}
           </Stack>
         </CardBody>
         <Divider />
