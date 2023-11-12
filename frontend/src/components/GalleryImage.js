@@ -1,5 +1,5 @@
-import { Box, Input, Button } from "@chakra-ui/react";
-import { useState, useRef } from "react";
+import { Box, Input, Button } from '@chakra-ui/react';
+import { useState, useRef } from 'react';
 
 export default function GalleryImage({ setImage, setFile }) {
   const inputRef = useRef(null);
@@ -12,6 +12,7 @@ export default function GalleryImage({ setImage, setFile }) {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
+        console.log(reader.result);
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
@@ -23,7 +24,7 @@ export default function GalleryImage({ setImage, setFile }) {
       <Input
         ref={inputRef}
         key={inputKey}
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
         accept="image/*"
         type="file"
         onChange={detectImage}

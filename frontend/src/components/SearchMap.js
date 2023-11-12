@@ -93,6 +93,8 @@ const SearchMap = ({ google, loaded, attributes }) => {
   );
 };
 
+const API_KEY = process.env.API_KEY;
+
 export default GoogleApiWrapper({
-  apiKey: '***REMOVED***',
+  apiKey: API_KEY,
 })(SearchMap);
