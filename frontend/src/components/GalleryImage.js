@@ -1,10 +1,13 @@
-import { Box, Input, Image } from '@chakra-ui/react';
-import { useState } from 'react';
-import Webcam from 'react-webcam';
+import { Box, Input, Button } from "@chakra-ui/react";
+import { useState, useRef } from "react";
 
-export default function GalleryImage({ image, setImage, setFile }) {
+export default function GalleryImage({ setImage, setFile }) {
+  const inputRef = useRef(null);
+  const [inputKey, setInputKey] = useState(0);
+
   const detectImage = (e) => {
     const file = e.target.files[0];
+    setInputKey((prev) => prev + 1);
     setFile(file);
     if (file) {
       const reader = new FileReader();
@@ -18,12 +21,16 @@ export default function GalleryImage({ image, setImage, setFile }) {
   return (
     <Box>
       <Input
-        p="2em"
+        ref={inputRef}
+        key={inputKey}
+        style={{ display: "none" }}
+        accept="image/*"
         type="file"
         onChange={detectImage}
-        accept="image/*"
-        variant="outlined"
       />
+      <Button colorScheme="blue" onClick={() => inputRef.current.click()}>
+        Upload File
+      </Button>
     </Box>
   );
 }
