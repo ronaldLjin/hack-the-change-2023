@@ -1,8 +1,7 @@
-import { useRef, useCallback, useState } from 'react';
-import Webcam from 'react-webcam';
+import { useRef, useCallback } from "react";
+import Webcam from "react-webcam";
 import {
   Button,
-  Image,
   Box,
   Modal,
   ModalOverlay,
@@ -12,49 +11,52 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
 const videoConstraints = {
-  facingMode: 'user',
-  width: 300,
+  facingMode: "user",
+  width: 350,
   height: 300,
 };
 
-export default function WebcamCapture({ image, setImage }) {
+export default function WebcamCapture({ setImage, setFile }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const webcamRef = useRef(null);
   const capture = useCallback(() => {
+    setFile(undefined);
     setImage(webcamRef.current.getScreenshot());
   }, [webcamRef]);
 
   const closeModal = () => {
     onClose();
     capture();
-    console.log(image);
   };
 
   return (
-    <>
-      <Button onClick={onOpen}>Take a Picture!</Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
+    <Box>
+      <Button colorScheme="blue" onClick={onOpen}>
+        Take a Picture!
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Take a Picture!</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody style={{ display: "flex", justifyContent: "center" }}>
             <Webcam
               ref={webcamRef}
               screenshotFormat="image/jpg"
               videoConstraints={videoConstraints}
             />
           </ModalBody>
-
-          <Button colorScheme="blue" mr={3} onClick={closeModal}>
-            Detect Image
-          </Button>
+          <ModalFooter style={{ display: "flex", justifyContent: "center" }}>
+            <Button colorScheme="blue" mr={3} onClick={closeModal}>
+              Take Image
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 }
